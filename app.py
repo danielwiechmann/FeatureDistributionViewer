@@ -1063,6 +1063,25 @@ def render_cefr_subcategory_overview(
 .pill-down{background:#fee2e2;border-color:#ef4444;color:#7f1d1d;}
 .pill-close{background:#fef3c7;border-color:#f59e0b;color:#78350f;}
 .badge{font-size:.72rem;padding:2px 6px;border-radius:999px;background:#eef2f7;color:#374151;border:1px solid #e5e7eb;}
+
+.lvl-chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;}
+/* neutral chip */
+.chip{
+  display:inline-block; padding:2px 8px; border-radius:999px;
+  border:1px solid #e5e7eb; background:#f3f4f6; color:#374151; font-size:.78rem;
+  line-height:1.6;
+}
+/* nearest level (closest mean) */
+.chip-near{
+  background:#dcfce7; border-color:#10b981; color:#065f46;
+}
+/* levels lower than Students’ mean (helpful “strengths”) */
+.chip-lower{
+  background:#ecfdf5; border-color:#a7f3d0; color:#065f46;
+}
+/* hover */
+.chip:hover{filter:brightness(.97)}
+
 </style>
     """,
     unsafe_allow_html=True,
@@ -1178,14 +1197,18 @@ def render_cefr_subcategory_overview(
                 chip_elems = []
                 for lvl, mu, _sd in levels:
                     cls = "chip"
+                    title = f"{lvl} mean: {format_num(mu,1)}"
                     if lvl == closest:
                         cls = "chip chip-near"
+                        title = f"{lvl} (nearest to Students’ mean): {format_num(mu,1)}"
                     elif mu < mean_stu:
                         cls = "chip chip-lower"
-                    # else keep default grey
-                    chip_elems.append(f'<span class="{cls}">{lvl} {format_num(mu,1)}</span>')
+                        title = f"{lvl} (lower than Students’ mean): {format_num(mu,1)}"
+                    chip_elems.append(f'<span class="{cls}" title="{html.escape(title)}">{lvl}: {format_num(mu,1)}</span>')
+
                 if chip_elems:
                     st.markdown(f'<div class="lvl-chips">{" ".join(chip_elems)}</div>', unsafe_allow_html=True)
+
 
                 st.markdown('</div>', unsafe_allow_html=True)
 
@@ -1897,9 +1920,16 @@ with tab_ai:
         fd = (st.session_state.get("feat_docs") or {}).get(sel_metric_ai, {})
         definition = (fd.get("definition") or "").strip()
 
-        st.markdown(f"**{disp}**")
-        if definition:
-            st.write(definition)
+        st.markdown(
+            f"""
+        <div style="border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px;background:#fff;box-shadow:0 1px 2px rgba(0,0,0,.04);margin-bottom:8px;">
+        <div style="font-weight:700;">{html.escape(disp)}</div>
+        <div style="color:#374151;font-size:0.92rem;margin-top:4px;">{html.escape(definition) if definition else ""}</div>
+        </div>
+        """,
+            unsafe_allow_html=True,
+        )
+
 
         st.markdown("---")
 
