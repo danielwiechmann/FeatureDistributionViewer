@@ -1,20 +1,36 @@
-# Feature Distribution Viewer
+# AI & CEFR Explorer — Writing Analytics for Classrooms
 
-Interactive Streamlit app for visualizing **feature distributions** by group (Humans vs AI).  
-Upload your own CSVs, filter humans by **COURSE**, pick a **feature**, and explore **boxplots with jittered points** (hover shows **TID** and value). No data is stored.
+Interactive Streamlit app to explore **sentence-structure** and **vocabulary** metrics, compare **Students vs AI**, and profile cohorts against **CEFR (A1–C2)** reference means. All computation happens locally while the app runs.
 
 ## What it does
-- Upload **Measurements CSV** (features + `TID`, `Group`)
-- Upload **Meta CSV** (at least `TID`, `COURSE`)
-- Filter: Humans (all or by COURSE) and optionally include AI
-- Choose **All features** or a curated **NM selection**
-- Plot **original-scale** distributions with hoverable **TID**
-- Optional aggregation to **one row per (Group, TID)** (mean)
+- **Tutorial**: Two curated example texts with inline **highlights**; per-metric cards with **CEFR chips** (hover explains levels).
+- **Students vs AI**: Filter Students by **COURSE**, pick a metric, and view **boxplots with jittered points** (hover shows **TID**, value, course).
+- **CEFR Profiling**: Cohort distributions with **nearest CEFR mean** guides, **quartile band**, and an **individual student** readout.
+- **Unlimited metric selection**: default shows 6 to avoid clutter; users can select any number of metrics.
 
-## Expected CSV columns
-- **Measurements CSV:** `TID`, `Group` (values `AI`/`Human` or `1`/`0`), plus numeric feature columns
-- **Meta CSV:** `TID`, `COURSE`
-- Any extra columns are ignored
+## Data you can load
+Use the **sidebar** to upload a **demo ZIP** (recommended) or mirror its structure with your own CSVs.
+
+**1) Main data (required)**
+- Columns: `TID`, `Group` (`AI`/`Human` or `1`/`0`)  
+- Optional: `COURSE`, `text`  
+- Plus numeric feature columns (e.g., `MLS`, `MLC`, `cPC`, `N_fulltext`, …)
+
+**2) CEFR reference (optional)**
+- Columns (case-insensitive): `level` (A1–C2), `feature`, `mean`, `sd`
+
+**3) Example texts (optional, Tutorial)**
+- Columns: `TID`, `text` (may also include metric columns)
+
+**4) Feature descriptions (optional)**
+- Required: `feature`, `display`, `definition`  
+- Optional: `why`, `example_high`, `example_low`, `subcategory`, `family`
+
+## Configuration (in code)
+- Whitelists: `SENTENCE_STRUCTURE_SUBCATS`, `VOCABULARY_SUBCATS`
+- Rename labels (UI only): `CUSTOM_RENAMES = {"N_fulltext": "Number of Words Tokens (instances)", ...}`
+- Remove metrics everywhere: `PRUNE_FEATURES = {"NDW", "cTTR", ...}`
+- Meta columns never shown: `ALWAYS_EXCLUDE = {"TID","Group","COURSE","wid","text"}`
 
 ## Run locally
 ```bash
