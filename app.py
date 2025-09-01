@@ -14,7 +14,7 @@ import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
 
-st.set_page_config(page_title="AI_CEFR_Explorer", layout="wide")
+st.set_page_config(page_title="AI_CEFR_Explorer", layout="centered")
 
 
 
@@ -2088,7 +2088,7 @@ with tab_cefr:
     st.session_state[chip_key] = selected_feats
 
     if selected_feats:
-        st.markdown("### Subcategory overview (selected metrics)")
+        st.markdown("### Results Overview (all selected metrics)")
         st.caption(
             "Stats for **Students** cohort. Bars bounded by Students’ min–max. "
             "● = Students mean; ◯ = CEFR means; shaded band = ±1 SD around closest CEFR mean; "
